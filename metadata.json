@@ -1,0 +1,6 @@
+{
+  "name": "Desafio Vida Saudável",
+  "description": "Aplicativo mobile-first de acompanhamento de dieta de 30 dias com cardápios Low Carb e High Carb, rastreamento de refeições e persistência local.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
