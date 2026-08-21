@@ -21,6 +21,7 @@ export function createInitialDay(dayNumber: number): DayState {
       jantar: createEmptyMealState(),
     },
     waterCups: 0,
+    exerciseCompleted: false,
     notes: '',
   };
 }

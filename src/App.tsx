@@ -8,6 +8,11 @@ import {
   Award,
   ChevronRight,
   Share2,
+  Utensils,
+  Dumbbell,
+  Heart,
+  BookOpen,
+  RotateCcw,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
@@ -20,13 +25,16 @@ import {
 } from './utils/storage';
 import { Header } from './components/Header';
 import { DayCard } from './components/DayCard';
+import { ExerciseTracker } from './components/ExerciseTracker';
 import { DietGuideModal } from './components/DietGuideModal';
 import { ResetConfirmModal } from './components/ResetConfirmModal';
 
+type AppTab = 'diet' | 'exercise';
 type FilterType = 'all' | 'pending' | 'completed';
 type WeekFilter = 'all' | 'w1' | 'w2' | 'w3' | 'w4' | 'w5';
 
 export default function App() {
+  const [activeTab, setActiveTab] = useState<AppTab>('diet');
   const [challengeState, setChallengeState] = useState<UserChallengeState>(() =>
     loadUserChallengeState()
   );
@@ -49,6 +57,11 @@ export default function App() {
   // Calculate overall stats
   const stats = useMemo(() => {
     return calculateChallengeStats(challengeState.days);
+  }, [challengeState.days]);
+
+  // Exercise completed count
+  const exerciseCompletedCount = useMemo(() => {
+    return (Object.values(challengeState.days) as DayState[]).filter((d) => d.exerciseCompleted).length;
   }, [challengeState.days]);
 
   // Handler: Change active diet
@@ -163,6 +176,43 @@ export default function App() {
     }));
   };
 
+  // Handler: Toggle single exercise day
+  const handleToggleExercise = (dayNumber: number) => {
+    setChallengeState((prev) => {
+      const currentDay = prev.days[dayNumber];
+      const isDone = Boolean(currentDay?.exerciseCompleted);
+      return {
+        ...prev,
+        days: {
+          ...prev.days,
+          [dayNumber]: {
+            ...currentDay,
+            exerciseCompleted: !isDone,
+          },
+        },
+      };
+    });
+  };
+
+  // Handler: Toggle full week of exercises
+  const handleToggleWeekExercise = (dayNumbers: number[], forceComplete: boolean) => {
+    setChallengeState((prev) => {
+      const nextDays = { ...prev.days };
+      dayNumbers.forEach((d) => {
+        if (nextDays[d]) {
+          nextDays[d] = {
+            ...nextDays[d],
+            exerciseCompleted: forceComplete,
+          };
+        }
+      });
+      return {
+        ...prev,
+        days: nextDays,
+      };
+    });
+  };
+
   // Handler: Reset challenge state
   const handleResetChallenge = () => {
     const newState = createDefaultState(challengeState.activeDietType);
@@ -173,7 +223,12 @@ export default function App() {
 
   // Share summary handler
   const handleShareProgress = () => {
-    const text = `🏆 Desafio Não Morra: completei ${stats.completedDaysCount} de 30 dias (${stats.percentage}%) e ${stats.totalMealsCompleted}/120 refeições saudáveis! 🥗💧`;
+    let text = '';
+    if (activeTab === 'diet') {
+      text = `🏆 Desafio Não Morra: completei ${stats.completedDaysCount} de 30 dias (${stats.percentage}%) e ${stats.totalMealsCompleted}/120 refeições saudáveis! 🥗💧`;
+    } else {
+      text = `💪 Desafio Não Morra (Exercício): completei ${exerciseCompletedCount} treinos cumprindo a meta de 3x por semana! 🔥`;
+    }
     if (navigator.clipboard) {
       navigator.clipboard.writeText(text);
       setShareToast(true);
@@ -207,7 +262,7 @@ export default function App() {
     });
   }, [challengeState.days, filterType, weekFilter]);
 
-  // Grand celebration if 30 days reached
+  // Grand celebration if 30 days reached in diet
   useEffect(() => {
     if (stats.completedDaysCount === 30) {
       try {
@@ -231,243 +286,328 @@ export default function App() {
 
         {/* Scrollable Content Container */}
         <div className="p-4 sm:p-5 space-y-4 flex-1 overflow-y-auto overflow-x-hidden no-scrollbar">
-          {/* Header with Title & Diet Selector */}
-          <Header
-            activeDiet={activeDiet}
-            onChangeDiet={handleDietChange}
-            stats={stats}
-            onOpenGuide={() => setIsGuideOpen(true)}
-            onOpenReset={() => setIsResetModalOpen(true)}
-          />
-
-          {/* Milestone / Encouragement Banner */}
-          {stats.completedDaysCount === 30 ? (
-            <div className="p-4 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-700 text-white shadow-lg shadow-emerald-500/20 text-center space-y-1 border border-emerald-400/40">
-              <div className="w-10 h-10 mx-auto rounded-full bg-white/20 flex items-center justify-center mb-1">
-                <Award className="w-6 h-6 text-yellow-300" />
-              </div>
-              <h3 className="font-extrabold text-base">
-                🎉 Parabéns! Você completou os 30 Dias!
-              </h3>
-              <p className="text-xs text-emerald-100">
-                Uma grande vitória para sua saúde, disciplina e bem-estar.
-              </p>
+          {/* Top Quick Actions Bar (30 Dias, Guia, Reset) */}
+          <div className="flex items-center justify-between gap-2 px-0.5">
+            <div className="flex items-center gap-1.5 text-xs font-semibold text-pink-200 bg-[#FF6B8B]/20 backdrop-blur-md px-3 py-1 rounded-full border border-[#FF6B8B]/40 shadow-xs">
+              <Heart className="w-3.5 h-3.5 fill-[#FF6B8B] text-[#FF6B8B]" />
+              <span>30 Dias</span>
             </div>
-          ) : (
-            <div className="flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-[#1E293B] border border-slate-800 text-xs shadow-xs">
-              <div className="flex items-center gap-2">
-                <div className="w-6 h-6 rounded-full bg-[#FF6B8B] text-white flex items-center justify-center font-bold text-xs shadow-md shadow-pink-500/20">
-                  {stats.completedDaysCount + 1}
-                </div>
-                <span className="font-semibold text-slate-200">
-                  Próximo objetivo: Dia {Math.min(stats.completedDaysCount + 1, 30)}
-                </span>
-              </div>
+
+            <div className="flex items-center gap-1.5">
               <button
                 type="button"
-                onClick={() => {
-                  const target = Math.min(stats.completedDaysCount + 1, 30);
-                  setExpandedDays((prev) => ({ ...prev, [target]: true }));
-                  const el = document.getElementById(`card-day-${target}`);
-                  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }}
-                className="text-pink-400 hover:text-pink-300 font-bold flex items-center gap-0.5"
+                id="btn-open-guide"
+                onClick={() => setIsGuideOpen(true)}
+                className="flex items-center gap-1 text-xs font-semibold text-slate-200 bg-slate-800 hover:bg-slate-700 hover:text-white px-3 py-1.5 rounded-full border border-slate-700 transition-colors shadow-xs"
               >
-                <span>Ir ao dia</span>
-                <ChevronRight className="w-3.5 h-3.5" />
+                <BookOpen className="w-3.5 h-3.5 text-[#38BDF8]" />
+                <span>Guia</span>
               </button>
+
+              <button
+                type="button"
+                id="btn-reset-challenge"
+                onClick={() => setIsResetModalOpen(true)}
+                title="Reiniciar Desafio"
+                className="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-rose-300 bg-slate-800 hover:bg-slate-700 rounded-full border border-slate-700 transition-colors"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          </div>
+
+          {/* Minimalist 2-Tab Navigation Bar */}
+          <div className="flex items-center bg-[#070A11] p-1 rounded-2xl border border-slate-800 shadow-inner">
+            <button
+              type="button"
+              id="tab-btn-diet"
+              onClick={() => setActiveTab('diet')}
+              className={`flex-1 py-2 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
+                activeTab === 'diet'
+                  ? 'bg-[#FF6B8B] text-white shadow-md shadow-pink-500/20 scale-[1.01]'
+                  : 'text-slate-400 hover:text-slate-200'
+              }`}
+            >
+              <Utensils className="w-3.5 h-3.5" />
+              <span>Alimentação</span>
+            </button>
+
+            <button
+              type="button"
+              id="tab-btn-exercise"
+              onClick={() => setActiveTab('exercise')}
+              className={`flex-1 py-2 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
+                activeTab === 'exercise'
+                  ? 'bg-[#38BDF8] text-slate-950 shadow-md shadow-sky-500/20 scale-[1.01]'
+                  : 'text-slate-400 hover:text-slate-200'
+              }`}
+            >
+              <Dumbbell className="w-3.5 h-3.5" />
+              <span>Exercício</span>
+            </button>
+          </div>
+
+          {/* TAB 1: ALIMENTAÇÃO */}
+          {activeTab === 'diet' && (
+            <div className="space-y-4 animate-in fade-in duration-200">
+              {/* Header with Diet Selector & Metrics */}
+              <Header
+                activeDiet={activeDiet}
+                onChangeDiet={handleDietChange}
+                stats={stats}
+              />
+
+              {/* Milestone / Encouragement Banner */}
+              {stats.completedDaysCount === 30 ? (
+                <div className="p-4 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-700 text-white shadow-lg shadow-emerald-500/20 text-center space-y-1 border border-emerald-400/40">
+                  <div className="w-10 h-10 mx-auto rounded-full bg-white/20 flex items-center justify-center mb-1">
+                    <Award className="w-6 h-6 text-yellow-300" />
+                  </div>
+                  <h3 className="font-extrabold text-base">
+                    🎉 Parabéns! Você completou os 30 Dias!
+                  </h3>
+                  <p className="text-xs text-emerald-100">
+                    Uma grande vitória para sua saúde, disciplina e bem-estar.
+                  </p>
+                </div>
+              ) : (
+                <div className="flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-[#1E293B] border border-slate-800 text-xs shadow-xs">
+                  <div className="flex items-center gap-2">
+                    <div className="w-6 h-6 rounded-full bg-[#FF6B8B] text-white flex items-center justify-center font-bold text-xs shadow-md shadow-pink-500/20">
+                      {stats.completedDaysCount + 1}
+                    </div>
+                    <span className="font-semibold text-slate-200">
+                      Próximo objetivo: Dia {Math.min(stats.completedDaysCount + 1, 30)}
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const target = Math.min(stats.completedDaysCount + 1, 30);
+                      setExpandedDays((prev) => ({ ...prev, [target]: true }));
+                      const el = document.getElementById(`card-day-${target}`);
+                      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }}
+                    className="text-pink-400 hover:text-pink-300 font-bold flex items-center gap-0.5"
+                  >
+                    <span>Ir ao dia</span>
+                    <ChevronRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              )}
+
+              {/* Week & Status Filter Tabs */}
+              <div className="space-y-2">
+                {/* Week Pills */}
+                <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar text-xs">
+                  <button
+                    type="button"
+                    id="btn-filter-all-weeks"
+                    onClick={() => setWeekFilter('all')}
+                    className={`px-3 py-1.5 rounded-full font-bold whitespace-nowrap transition-all ${
+                      weekFilter === 'all'
+                        ? 'bg-slate-100 text-slate-900 shadow-md'
+                        : 'bg-[#1E293B] text-slate-400 border border-slate-800 hover:text-slate-200'
+                    }`}
+                  >
+                    Todos (30 Dias)
+                  </button>
+                  <button
+                    type="button"
+                    id="btn-filter-w1"
+                    onClick={() => setWeekFilter('w1')}
+                    className={`px-3 py-1.5 rounded-full font-bold whitespace-nowrap transition-all ${
+                      weekFilter === 'w1'
+                        ? 'bg-slate-100 text-slate-900 shadow-md'
+                        : 'bg-[#1E293B] text-slate-400 border border-slate-800 hover:text-slate-200'
+                    }`}
+                  >
+                    Semana 1
+                  </button>
+                  <button
+                    type="button"
+                    id="btn-filter-w2"
+                    onClick={() => setWeekFilter('w2')}
+                    className={`px-3 py-1.5 rounded-full font-bold whitespace-nowrap transition-all ${
+                      weekFilter === 'w2'
+                        ? 'bg-slate-100 text-slate-900 shadow-md'
+                        : 'bg-[#1E293B] text-slate-400 border border-slate-800 hover:text-slate-200'
+                    }`}
+                  >
+                    Semana 2
+                  </button>
+                  <button
+                    type="button"
+                    id="btn-filter-w3"
+                    onClick={() => setWeekFilter('w3')}
+                    className={`px-3 py-1.5 rounded-full font-bold whitespace-nowrap transition-all ${
+                      weekFilter === 'w3'
+                        ? 'bg-slate-100 text-slate-900 shadow-md'
+                        : 'bg-[#1E293B] text-slate-400 border border-slate-800 hover:text-slate-200'
+                    }`}
+                  >
+                    Semana 3
+                  </button>
+                  <button
+                    type="button"
+                    id="btn-filter-w4"
+                    onClick={() => setWeekFilter('w4')}
+                    className={`px-3 py-1.5 rounded-full font-bold whitespace-nowrap transition-all ${
+                      weekFilter === 'w4'
+                        ? 'bg-slate-100 text-slate-900 shadow-md'
+                        : 'bg-[#1E293B] text-slate-400 border border-slate-800 hover:text-slate-200'
+                    }`}
+                  >
+                    Semana 4
+                  </button>
+                  <button
+                    type="button"
+                    id="btn-filter-w5"
+                    onClick={() => setWeekFilter('w5')}
+                    className={`px-3 py-1.5 rounded-full font-bold whitespace-nowrap transition-all ${
+                      weekFilter === 'w5'
+                        ? 'bg-slate-100 text-slate-900 shadow-md'
+                        : 'bg-[#1E293B] text-slate-400 border border-slate-800 hover:text-slate-200'
+                    }`}
+                  >
+                    Reta Final
+                  </button>
+                </div>
+
+                {/* Sub-bar: Status Filter and Expand/Collapse buttons */}
+                <div className="flex items-center justify-between gap-2 text-xs pt-1 border-t border-slate-800">
+                  <div className="flex items-center gap-1">
+                    <button
+                      type="button"
+                      id="btn-status-all"
+                      onClick={() => setFilterType('all')}
+                      className={`px-2.5 py-1 rounded-lg font-semibold transition-colors ${
+                        filterType === 'all'
+                          ? 'bg-[#FF6B8B] text-white shadow-md shadow-pink-500/20'
+                          : 'text-slate-400 hover:text-slate-200'
+                      }`}
+                    >
+                      Todos
+                    </button>
+                    <button
+                      type="button"
+                      id="btn-status-pending"
+                      onClick={() => setFilterType('pending')}
+                      className={`px-2.5 py-1 rounded-lg font-semibold transition-colors ${
+                        filterType === 'pending'
+                          ? 'bg-[#FF6B8B] text-white shadow-md shadow-pink-500/20'
+                          : 'text-slate-400 hover:text-slate-200'
+                      }`}
+                    >
+                      Pendentes
+                    </button>
+                    <button
+                      type="button"
+                      id="btn-status-completed"
+                      onClick={() => setFilterType('completed')}
+                      className={`px-2.5 py-1 rounded-lg font-semibold transition-colors ${
+                        filterType === 'completed'
+                          ? 'bg-[#FF6B8B] text-white shadow-md shadow-pink-500/20'
+                          : 'text-slate-400 hover:text-slate-200'
+                      }`}
+                    >
+                      Concluídos
+                    </button>
+                  </div>
+
+                  <div className="flex items-center gap-1">
+                    <button
+                      type="button"
+                      id="btn-expand-all"
+                      onClick={() => handleExpandAll(true)}
+                      title="Expandir todos os dias"
+                      className="p-1 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-colors"
+                    >
+                      <Maximize2 className="w-3.5 h-3.5" />
+                    </button>
+                    <button
+                      type="button"
+                      id="btn-collapse-all"
+                      onClick={() => handleExpandAll(false)}
+                      title="Recolher todos os dias"
+                      className="p-1 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-colors"
+                    >
+                      <Minimize2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Days List (1 to 30) */}
+              <div className="space-y-2.5 pb-6">
+                {filteredDays.length === 0 ? (
+                  <div className="text-center py-10 px-4 rounded-2xl bg-[#1E293B] border border-slate-800 space-y-2">
+                    <div className="w-9 h-9 mx-auto rounded-full bg-[#0F172A] border border-slate-700 flex items-center justify-center text-slate-400">
+                      <Filter className="w-4 h-4" />
+                    </div>
+                    <p className="text-xs font-semibold text-slate-200">
+                      Nenhum dia encontrado neste filtro
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setFilterType('all');
+                        setWeekFilter('all');
+                      }}
+                      className="mt-1 text-xs font-bold text-[#FF8E9E] hover:underline"
+                    >
+                      Limpar Filtros
+                    </button>
+                  </div>
+                ) : (
+                  filteredDays.map((day) => (
+                    <DayCard
+                      key={day.dayNumber}
+                      day={day}
+                      activeDiet={activeDiet}
+                      isExpanded={Boolean(expandedDays[day.dayNumber])}
+                      onToggleExpand={() => handleToggleExpand(day.dayNumber)}
+                      onToggleDayCompleted={handleToggleDayCompleted}
+                      onUpdateMeal={handleUpdateMeal}
+                      onUpdateWater={handleUpdateWater}
+                    />
+                  ))
+                )}
+              </div>
             </div>
           )}
 
-          {/* Week & Status Filter Tabs */}
-          <div className="space-y-2">
-            {/* Week Pills */}
-            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar text-xs">
-              <button
-                type="button"
-                id="btn-filter-all-weeks"
-                onClick={() => setWeekFilter('all')}
-                className={`px-3 py-1.5 rounded-full font-bold whitespace-nowrap transition-all ${
-                  weekFilter === 'all'
-                    ? 'bg-slate-100 text-slate-900 shadow-md'
-                    : 'bg-[#1E293B] text-slate-400 border border-slate-800 hover:text-slate-200'
-                }`}
-              >
-                Todos (30 Dias)
-              </button>
-              <button
-                type="button"
-                id="btn-filter-w1"
-                onClick={() => setWeekFilter('w1')}
-                className={`px-3 py-1.5 rounded-full font-bold whitespace-nowrap transition-all ${
-                  weekFilter === 'w1'
-                    ? 'bg-slate-100 text-slate-900 shadow-md'
-                    : 'bg-[#1E293B] text-slate-400 border border-slate-800 hover:text-slate-200'
-                }`}
-              >
-                Semana 1
-              </button>
-              <button
-                type="button"
-                id="btn-filter-w2"
-                onClick={() => setWeekFilter('w2')}
-                className={`px-3 py-1.5 rounded-full font-bold whitespace-nowrap transition-all ${
-                  weekFilter === 'w2'
-                    ? 'bg-slate-100 text-slate-900 shadow-md'
-                    : 'bg-[#1E293B] text-slate-400 border border-slate-800 hover:text-slate-200'
-                }`}
-              >
-                Semana 2
-              </button>
-              <button
-                type="button"
-                id="btn-filter-w3"
-                onClick={() => setWeekFilter('w3')}
-                className={`px-3 py-1.5 rounded-full font-bold whitespace-nowrap transition-all ${
-                  weekFilter === 'w3'
-                    ? 'bg-slate-100 text-slate-900 shadow-md'
-                    : 'bg-[#1E293B] text-slate-400 border border-slate-800 hover:text-slate-200'
-                }`}
-              >
-                Semana 3
-              </button>
-              <button
-                type="button"
-                id="btn-filter-w4"
-                onClick={() => setWeekFilter('w4')}
-                className={`px-3 py-1.5 rounded-full font-bold whitespace-nowrap transition-all ${
-                  weekFilter === 'w4'
-                    ? 'bg-slate-100 text-slate-900 shadow-md'
-                    : 'bg-[#1E293B] text-slate-400 border border-slate-800 hover:text-slate-200'
-                }`}
-              >
-                Semana 4
-              </button>
-              <button
-                type="button"
-                id="btn-filter-w5"
-                onClick={() => setWeekFilter('w5')}
-                className={`px-3 py-1.5 rounded-full font-bold whitespace-nowrap transition-all ${
-                  weekFilter === 'w5'
-                    ? 'bg-slate-100 text-slate-900 shadow-md'
-                    : 'bg-[#1E293B] text-slate-400 border border-slate-800 hover:text-slate-200'
-                }`}
-              >
-                Reta Final
-              </button>
-            </div>
-
-            {/* Sub-bar: Status Filter and Expand/Collapse buttons */}
-            <div className="flex items-center justify-between gap-2 text-xs pt-1 border-t border-slate-800">
-              <div className="flex items-center gap-1">
-                <button
-                  type="button"
-                  id="btn-status-all"
-                  onClick={() => setFilterType('all')}
-                  className={`px-2.5 py-1 rounded-lg font-semibold transition-colors ${
-                    filterType === 'all'
-                      ? 'bg-[#FF6B8B] text-white shadow-md shadow-pink-500/20'
-                      : 'text-slate-400 hover:text-slate-200'
-                  }`}
-                >
-                  Todos
-                </button>
-                <button
-                  type="button"
-                  id="btn-status-pending"
-                  onClick={() => setFilterType('pending')}
-                  className={`px-2.5 py-1 rounded-lg font-semibold transition-colors ${
-                    filterType === 'pending'
-                      ? 'bg-[#FF6B8B] text-white shadow-md shadow-pink-500/20'
-                      : 'text-slate-400 hover:text-slate-200'
-                  }`}
-                >
-                  Pendentes
-                </button>
-                <button
-                  type="button"
-                  id="btn-status-completed"
-                  onClick={() => setFilterType('completed')}
-                  className={`px-2.5 py-1 rounded-lg font-semibold transition-colors ${
-                    filterType === 'completed'
-                      ? 'bg-[#FF6B8B] text-white shadow-md shadow-pink-500/20'
-                      : 'text-slate-400 hover:text-slate-200'
-                  }`}
-                >
-                  Concluídos
-                </button>
-              </div>
-
-              <div className="flex items-center gap-1">
-                <button
-                  type="button"
-                  id="btn-expand-all"
-                  onClick={() => handleExpandAll(true)}
-                  title="Expandir todos os dias"
-                  className="p-1 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-colors"
-                >
-                  <Maximize2 className="w-3.5 h-3.5" />
-                </button>
-                <button
-                  type="button"
-                  id="btn-collapse-all"
-                  onClick={() => handleExpandAll(false)}
-                  title="Recolher todos os dias"
-                  className="p-1 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-colors"
-                >
-                  <Minimize2 className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* Days List (1 to 30) */}
-          <div className="space-y-2.5 pb-6">
-            {filteredDays.length === 0 ? (
-              <div className="text-center py-10 px-4 rounded-2xl bg-[#1E293B] border border-slate-800 space-y-2">
-                <div className="w-9 h-9 mx-auto rounded-full bg-[#0F172A] border border-slate-700 flex items-center justify-center text-slate-400">
-                  <Filter className="w-4 h-4" />
-                </div>
-                <p className="text-xs font-semibold text-slate-200">
-                  Nenhum dia encontrado neste filtro
-                </p>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setFilterType('all');
-                    setWeekFilter('all');
-                  }}
-                  className="mt-1 text-xs font-bold text-[#FF8E9E] hover:underline"
-                >
-                  Limpar Filtros
-                </button>
-              </div>
-            ) : (
-              filteredDays.map((day) => (
-                <DayCard
-                  key={day.dayNumber}
-                  day={day}
-                  activeDiet={activeDiet}
-                  isExpanded={Boolean(expandedDays[day.dayNumber])}
-                  onToggleExpand={() => handleToggleExpand(day.dayNumber)}
-                  onToggleDayCompleted={handleToggleDayCompleted}
-                  onUpdateMeal={handleUpdateMeal}
-                  onUpdateWater={handleUpdateWater}
-                />
-              ))
-            )}
-          </div>
+          {/* TAB 2: EXERCÍCIO */}
+          {activeTab === 'exercise' && (
+            <ExerciseTracker
+              days={challengeState.days}
+              onToggleExercise={handleToggleExercise}
+              onToggleWeekExercise={handleToggleWeekExercise}
+            />
+          )}
         </div>
 
         {/* Floating Quick Action / Bottom Bar */}
         <footer className="bg-[#1E293B] border-t border-slate-800 px-4 py-2.5 flex items-center justify-between gap-2 z-20 flex-shrink-0">
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-full bg-[#831843]/40 border border-[#FF6B8B]/40 text-[#FF8E9E] flex items-center justify-center">
-              <Sparkles className="w-3.5 h-3.5" />
+            <div
+              className={`w-7 h-7 rounded-full flex items-center justify-center border ${
+                activeTab === 'exercise'
+                  ? 'bg-sky-950/60 border-sky-500/40 text-sky-400'
+                  : 'bg-[#831843]/40 border-[#FF6B8B]/40 text-[#FF8E9E]'
+              }`}
+            >
+              {activeTab === 'exercise' ? (
+                <Dumbbell className="w-3.5 h-3.5" />
+              ) : (
+                <Sparkles className="w-3.5 h-3.5" />
+              )}
             </div>
             <div className="text-[11px] leading-tight">
               <span className="font-bold text-slate-200">
-                {stats.completedDaysCount}/30 Dias Concluídos
+                {activeTab === 'exercise'
+                  ? `${exerciseCompletedCount} Treinos Feitos (Meta: 3x/sem)`
+                  : `${stats.completedDaysCount}/30 Dias Concluídos`}
               </span>
               <p className="text-slate-400 text-[10px]">Progresso salvo no dispositivo</p>
             </div>
@@ -513,3 +653,4 @@ export default function App() {
     </div>
   );
 }
+

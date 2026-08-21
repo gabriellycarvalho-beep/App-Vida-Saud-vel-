@@ -238,7 +238,7 @@ export function MealItem({
               <div>
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-[11px] font-bold text-slate-200 flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#FF6B8B]" />
                     {colData.col3Extra.title}
                   </span>
                   {colData.col3Extra.badge && (
@@ -254,7 +254,7 @@ export function MealItem({
                       key={i}
                       className="p-1.5 rounded-lg text-[10px] leading-tight bg-[#1E293B] border border-slate-700/80 text-slate-300 flex items-start gap-1"
                     >
-                      <span className="text-emerald-400 font-bold">✓</span>
+                      <span className="text-[#FF6B8B] font-bold">✓</span>
                       <span>{item}</span>
                     </div>
                   ))}

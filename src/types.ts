@@ -40,6 +40,7 @@ export interface DayState {
   completed: boolean;
   meals: Record<MealType, MealState>;
   waterCups?: number; // Each cup ~250ml
+  exerciseCompleted?: boolean;
   notes?: string;
 }
 

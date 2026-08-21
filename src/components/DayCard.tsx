@@ -67,7 +67,7 @@ export function DayCard({
   // Card classes for Night Theme
   const getCardClasses = () => {
     if (isFullyCompleted) {
-      return 'border border-emerald-500/40 bg-emerald-950/20 rounded-2xl shadow-xs';
+      return 'border border-[#FF6B8B]/50 bg-pink-950/20 rounded-2xl shadow-xs';
     }
     if (isExpanded) {
       return 'border-2 border-[#FF6B8B]/80 rounded-2xl bg-[#1E293B] shadow-md shadow-pink-500/5';
@@ -97,7 +97,7 @@ export function DayCard({
         <div className="flex items-center gap-3 min-w-0">
           {/* Night Theme Number Badge */}
           {isFullyCompleted ? (
-            <div className="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center text-white font-bold text-xs flex-shrink-0 shadow-xs">
+            <div className="w-8 h-8 rounded-full bg-[#FF6B8B] flex items-center justify-center text-white font-bold text-xs flex-shrink-0 shadow-md shadow-pink-500/30">
               <Check className="w-4 h-4 stroke-[3]" />
             </div>
           ) : isExpanded ? (
@@ -118,8 +118,8 @@ export function DayCard({
               </h3>
 
               {isFullyCompleted ? (
-                <span className="inline-flex items-center gap-0.5 text-[10px] font-bold px-2 py-0.2 rounded-full bg-emerald-950/80 text-emerald-300 border border-emerald-800">
-                  <Sparkles className="w-2.5 h-2.5" />
+                <span className="inline-flex items-center gap-0.5 text-[10px] font-bold px-2 py-0.2 rounded-full bg-pink-950/90 text-pink-300 border border-pink-700/60 shadow-xs">
+                  <Sparkles className="w-2.5 h-2.5 text-[#FF6B8B]" />
                   Concluído
                 </span>
               ) : isExpanded ? (
@@ -141,9 +141,7 @@ export function DayCard({
                     key={i}
                     className={`w-1.5 h-1.5 rounded-full transition-colors ${
                       day.meals[m]?.completed
-                        ? isFullyCompleted
-                          ? 'bg-emerald-400'
-                          : 'bg-[#FF6B8B]'
+                        ? 'bg-[#FF6B8B]'
                         : 'bg-slate-700'
                     }`}
                     title={m}
@@ -168,7 +166,7 @@ export function DayCard({
             aria-label={`Marcar Dia ${day.dayNumber} como ${isFullyCompleted ? 'incompleto' : 'concluído'}`}
             className={`w-7 h-7 rounded-lg flex items-center justify-center transition-all ${
               isFullyCompleted
-                ? 'bg-emerald-500 text-white shadow-xs'
+                ? 'bg-[#FF6B8B] text-white shadow-md shadow-pink-500/25'
                 : 'bg-[#0F172A] text-slate-400 border border-slate-700 hover:border-slate-600 hover:text-slate-200'
             }`}
           >
@@ -203,7 +201,7 @@ export function DayCard({
               onClick={handleMarkAllMeals}
               className="inline-flex items-center gap-1 text-[11px] font-semibold text-slate-300 hover:text-white bg-[#1E293B] hover:bg-slate-700 px-2 py-0.8 rounded-lg border border-slate-700 transition-colors"
             >
-              <CheckCheck className="w-3.5 h-3.5 text-emerald-400" />
+              <CheckCheck className="w-3.5 h-3.5 text-[#FF6B8B]" />
               <span>Marcar 4 refeições</span>
             </button>
           </div>
