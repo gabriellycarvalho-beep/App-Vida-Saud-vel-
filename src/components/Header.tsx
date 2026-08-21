@@ -66,7 +66,7 @@ export function Header({
           id="main-app-title"
           className="text-xl sm:text-2xl font-black tracking-tight text-white drop-shadow-md relative z-10"
         >
-          Desafio Vida Saudável
+          Desafio Não Morra
         </h1>
         <p className="text-xs text-slate-300 mt-1 uppercase tracking-widest font-semibold relative z-10 flex items-center justify-center gap-1.5">
           <span className="w-1.5 h-1.5 rounded-full bg-[#FF6B8B]" />

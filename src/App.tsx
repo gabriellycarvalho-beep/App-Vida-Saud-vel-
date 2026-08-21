@@ -173,7 +173,7 @@ export default function App() {
 
   // Share summary handler
   const handleShareProgress = () => {
-    const text = `🏆 Desafio Vida Saudável: completei ${stats.completedDaysCount} de 30 dias (${stats.percentage}%) e ${stats.totalMealsCompleted}/120 refeições saudáveis! 🥗💧`;
+    const text = `🏆 Desafio Não Morra: completei ${stats.completedDaysCount} de 30 dias (${stats.percentage}%) e ${stats.totalMealsCompleted}/120 refeições saudáveis! 🥗💧`;
     if (navigator.clipboard) {
       navigator.clipboard.writeText(text);
       setShareToast(true);
