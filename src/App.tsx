@@ -1,9 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import {
   Sparkles,
-  Calendar,
   CheckCircle2,
-  Clock,
   Filter,
   Maximize2,
   Minimize2,
@@ -225,11 +223,11 @@ export default function App() {
   }, [stats.completedDaysCount]);
 
   return (
-    <div className="min-h-screen bg-[#E8F0FE] flex items-center justify-center p-0 sm:p-4 text-slate-800">
-      {/* Mobile-first centered phone container matching Natural Tones design */}
-      <main className="w-full max-w-sm sm:max-w-md h-screen sm:h-[844px] bg-white rounded-none sm:rounded-[44px] shadow-[0_20px_50px_rgba(0,0,0,0.12)] border-0 sm:border-[10px] border-[#1e293b] flex flex-col overflow-hidden relative">
+    <div className="min-h-screen bg-[#070A11] flex items-center justify-center p-0 sm:p-4 text-slate-100 selection:bg-[#FF6B8B] selection:text-white">
+      {/* Mobile-first centered phone container with sleek Night Theme */}
+      <main className="w-full max-w-sm sm:max-w-md h-screen sm:h-[844px] bg-[#0F172A] rounded-none sm:rounded-[44px] shadow-[0_25px_60px_rgba(0,0,0,0.7)] border-0 sm:border-[10px] border-[#1E293B] flex flex-col overflow-hidden relative">
         {/* Phone Notch (visible on desktop mockup) */}
-        <div className="hidden sm:block w-24 h-3.5 bg-[#1e293b] rounded-b-xl mx-auto -mt-0.5 mb-1 z-30 flex-shrink-0" />
+        <div className="hidden sm:block w-24 h-3.5 bg-[#070A11] rounded-b-xl mx-auto -mt-0.5 mb-1 z-30 flex-shrink-0" />
 
         {/* Scrollable Content Container */}
         <div className="p-4 sm:p-5 space-y-4 flex-1 overflow-y-auto overflow-x-hidden no-scrollbar">
@@ -244,7 +242,7 @@ export default function App() {
 
           {/* Milestone / Encouragement Banner */}
           {stats.completedDaysCount === 30 ? (
-            <div className="p-4 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/20 text-center space-y-1">
+            <div className="p-4 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-700 text-white shadow-lg shadow-emerald-500/20 text-center space-y-1 border border-emerald-400/40">
               <div className="w-10 h-10 mx-auto rounded-full bg-white/20 flex items-center justify-center mb-1">
                 <Award className="w-6 h-6 text-yellow-300" />
               </div>
@@ -256,12 +254,12 @@ export default function App() {
               </p>
             </div>
           ) : (
-            <div className="flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200/70 text-xs">
+            <div className="flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-[#1E293B] border border-slate-800 text-xs shadow-xs">
               <div className="flex items-center gap-2">
-                <div className="w-6 h-6 rounded-full bg-[#FF6B8B] text-white flex items-center justify-center font-bold text-xs shadow-2xs">
+                <div className="w-6 h-6 rounded-full bg-[#FF6B8B] text-white flex items-center justify-center font-bold text-xs shadow-md shadow-pink-500/20">
                   {stats.completedDaysCount + 1}
                 </div>
-                <span className="font-semibold text-slate-700">
+                <span className="font-semibold text-slate-200">
                   Próximo objetivo: Dia {Math.min(stats.completedDaysCount + 1, 30)}
                 </span>
               </div>
@@ -273,7 +271,7 @@ export default function App() {
                   const el = document.getElementById(`card-day-${target}`);
                   if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }}
-                className="text-[#FF6B8B] hover:text-[#FF8E9E] font-bold flex items-center gap-0.5"
+                className="text-pink-400 hover:text-pink-300 font-bold flex items-center gap-0.5"
               >
                 <span>Ir ao dia</span>
                 <ChevronRight className="w-3.5 h-3.5" />
@@ -291,8 +289,8 @@ export default function App() {
                 onClick={() => setWeekFilter('all')}
                 className={`px-3 py-1.5 rounded-full font-bold whitespace-nowrap transition-all ${
                   weekFilter === 'all'
-                    ? 'bg-slate-800 text-white shadow-xs'
-                    : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
+                    ? 'bg-slate-100 text-slate-900 shadow-md'
+                    : 'bg-[#1E293B] text-slate-400 border border-slate-800 hover:text-slate-200'
                 }`}
               >
                 Todos (30 Dias)
@@ -303,8 +301,8 @@ export default function App() {
                 onClick={() => setWeekFilter('w1')}
                 className={`px-3 py-1.5 rounded-full font-bold whitespace-nowrap transition-all ${
                   weekFilter === 'w1'
-                    ? 'bg-slate-800 text-white shadow-xs'
-                    : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
+                    ? 'bg-slate-100 text-slate-900 shadow-md'
+                    : 'bg-[#1E293B] text-slate-400 border border-slate-800 hover:text-slate-200'
                 }`}
               >
                 Semana 1
@@ -315,8 +313,8 @@ export default function App() {
                 onClick={() => setWeekFilter('w2')}
                 className={`px-3 py-1.5 rounded-full font-bold whitespace-nowrap transition-all ${
                   weekFilter === 'w2'
-                    ? 'bg-slate-800 text-white shadow-xs'
-                    : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
+                    ? 'bg-slate-100 text-slate-900 shadow-md'
+                    : 'bg-[#1E293B] text-slate-400 border border-slate-800 hover:text-slate-200'
                 }`}
               >
                 Semana 2
@@ -327,8 +325,8 @@ export default function App() {
                 onClick={() => setWeekFilter('w3')}
                 className={`px-3 py-1.5 rounded-full font-bold whitespace-nowrap transition-all ${
                   weekFilter === 'w3'
-                    ? 'bg-slate-800 text-white shadow-xs'
-                    : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
+                    ? 'bg-slate-100 text-slate-900 shadow-md'
+                    : 'bg-[#1E293B] text-slate-400 border border-slate-800 hover:text-slate-200'
                 }`}
               >
                 Semana 3
@@ -339,8 +337,8 @@ export default function App() {
                 onClick={() => setWeekFilter('w4')}
                 className={`px-3 py-1.5 rounded-full font-bold whitespace-nowrap transition-all ${
                   weekFilter === 'w4'
-                    ? 'bg-slate-800 text-white shadow-xs'
-                    : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
+                    ? 'bg-slate-100 text-slate-900 shadow-md'
+                    : 'bg-[#1E293B] text-slate-400 border border-slate-800 hover:text-slate-200'
                 }`}
               >
                 Semana 4
@@ -351,8 +349,8 @@ export default function App() {
                 onClick={() => setWeekFilter('w5')}
                 className={`px-3 py-1.5 rounded-full font-bold whitespace-nowrap transition-all ${
                   weekFilter === 'w5'
-                    ? 'bg-slate-800 text-white shadow-xs'
-                    : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
+                    ? 'bg-slate-100 text-slate-900 shadow-md'
+                    : 'bg-[#1E293B] text-slate-400 border border-slate-800 hover:text-slate-200'
                 }`}
               >
                 Reta Final
@@ -360,7 +358,7 @@ export default function App() {
             </div>
 
             {/* Sub-bar: Status Filter and Expand/Collapse buttons */}
-            <div className="flex items-center justify-between gap-2 text-xs pt-1 border-t border-slate-100">
+            <div className="flex items-center justify-between gap-2 text-xs pt-1 border-t border-slate-800">
               <div className="flex items-center gap-1">
                 <button
                   type="button"
@@ -368,8 +366,8 @@ export default function App() {
                   onClick={() => setFilterType('all')}
                   className={`px-2.5 py-1 rounded-lg font-semibold transition-colors ${
                     filterType === 'all'
-                      ? 'bg-[#FF6B8B] text-white shadow-2xs'
-                      : 'text-slate-500 hover:text-slate-800'
+                      ? 'bg-[#FF6B8B] text-white shadow-md shadow-pink-500/20'
+                      : 'text-slate-400 hover:text-slate-200'
                   }`}
                 >
                   Todos
@@ -380,8 +378,8 @@ export default function App() {
                   onClick={() => setFilterType('pending')}
                   className={`px-2.5 py-1 rounded-lg font-semibold transition-colors ${
                     filterType === 'pending'
-                      ? 'bg-[#FF6B8B] text-white shadow-2xs'
-                      : 'text-slate-500 hover:text-slate-800'
+                      ? 'bg-[#FF6B8B] text-white shadow-md shadow-pink-500/20'
+                      : 'text-slate-400 hover:text-slate-200'
                   }`}
                 >
                   Pendentes
@@ -392,8 +390,8 @@ export default function App() {
                   onClick={() => setFilterType('completed')}
                   className={`px-2.5 py-1 rounded-lg font-semibold transition-colors ${
                     filterType === 'completed'
-                      ? 'bg-[#FF6B8B] text-white shadow-2xs'
-                      : 'text-slate-500 hover:text-slate-800'
+                      ? 'bg-[#FF6B8B] text-white shadow-md shadow-pink-500/20'
+                      : 'text-slate-400 hover:text-slate-200'
                   }`}
                 >
                   Concluídos
@@ -406,7 +404,7 @@ export default function App() {
                   id="btn-expand-all"
                   onClick={() => handleExpandAll(true)}
                   title="Expandir todos os dias"
-                  className="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
+                  className="p-1 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-colors"
                 >
                   <Maximize2 className="w-3.5 h-3.5" />
                 </button>
@@ -415,7 +413,7 @@ export default function App() {
                   id="btn-collapse-all"
                   onClick={() => handleExpandAll(false)}
                   title="Recolher todos os dias"
-                  className="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
+                  className="p-1 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-colors"
                 >
                   <Minimize2 className="w-3.5 h-3.5" />
                 </button>
@@ -426,11 +424,11 @@ export default function App() {
           {/* Days List (1 to 30) */}
           <div className="space-y-2.5 pb-6">
             {filteredDays.length === 0 ? (
-              <div className="text-center py-10 px-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
-                <div className="w-9 h-9 mx-auto rounded-full bg-slate-100 flex items-center justify-center text-slate-400">
+              <div className="text-center py-10 px-4 rounded-2xl bg-[#1E293B] border border-slate-800 space-y-2">
+                <div className="w-9 h-9 mx-auto rounded-full bg-[#0F172A] border border-slate-700 flex items-center justify-center text-slate-400">
                   <Filter className="w-4 h-4" />
                 </div>
-                <p className="text-xs font-semibold text-slate-700">
+                <p className="text-xs font-semibold text-slate-200">
                   Nenhum dia encontrado neste filtro
                 </p>
                 <button
@@ -439,7 +437,7 @@ export default function App() {
                     setFilterType('all');
                     setWeekFilter('all');
                   }}
-                  className="mt-1 text-xs font-bold text-[#FF6B8B] hover:underline"
+                  className="mt-1 text-xs font-bold text-[#FF8E9E] hover:underline"
                 >
                   Limpar Filtros
                 </button>
@@ -462,13 +460,13 @@ export default function App() {
         </div>
 
         {/* Floating Quick Action / Bottom Bar */}
-        <footer className="bg-white border-t border-slate-200/80 px-4 py-2.5 flex items-center justify-between gap-2 z-20 flex-shrink-0">
+        <footer className="bg-[#1E293B] border-t border-slate-800 px-4 py-2.5 flex items-center justify-between gap-2 z-20 flex-shrink-0">
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-full bg-[#FFF0F3] text-[#FF6B8B] flex items-center justify-center">
+            <div className="w-7 h-7 rounded-full bg-[#831843]/40 border border-[#FF6B8B]/40 text-[#FF8E9E] flex items-center justify-center">
               <Sparkles className="w-3.5 h-3.5" />
             </div>
             <div className="text-[11px] leading-tight">
-              <span className="font-bold text-slate-700">
+              <span className="font-bold text-slate-200">
                 {stats.completedDaysCount}/30 Dias Concluídos
               </span>
               <p className="text-slate-400 text-[10px]">Progresso salvo no dispositivo</p>
@@ -479,7 +477,7 @@ export default function App() {
             type="button"
             id="btn-share-progress"
             onClick={handleShareProgress}
-            className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-[#FF6B8B] hover:bg-[#FF8E9E] text-white text-xs font-bold shadow-xs transition-colors"
+            className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-[#FF6B8B] hover:bg-[#FF8E9E] text-white text-xs font-bold shadow-md shadow-pink-500/20 transition-colors"
           >
             <Share2 className="w-3 h-3" />
             <span>Compartilhar</span>
@@ -487,13 +485,13 @@ export default function App() {
         </footer>
 
         {/* Bottom Home Indicator Bar (Mobile look) */}
-        <div className="hidden sm:block pb-1 bg-white">
-          <div className="w-28 h-1 bg-slate-800 rounded-full mx-auto my-1" />
+        <div className="hidden sm:block pb-1 bg-[#1E293B]">
+          <div className="w-28 h-1 bg-slate-700 rounded-full mx-auto my-1" />
         </div>
 
         {/* Share Toast Notification */}
         {shareToast && (
-          <div className="fixed bottom-16 left-1/2 -translate-x-1/2 z-50 bg-slate-900 text-white text-xs font-medium px-4 py-2 rounded-full shadow-lg border border-slate-700 animate-in fade-in flex items-center gap-2">
+          <div className="fixed bottom-16 left-1/2 -translate-x-1/2 z-50 bg-slate-900 text-white text-xs font-medium px-4 py-2 rounded-full shadow-2xl border border-slate-700 animate-in fade-in flex items-center gap-2">
             <CheckCircle2 className="w-4 h-4 text-emerald-400" />
             <span>Resumo copiado para a área de transferência!</span>
           </div>

@@ -1,12 +1,22 @@
 export type DietType = 'low_carb' | 'high_carb';
 
-export type MealType = 'cafe' | 'lanche' | 'almoco' | 'jantar';
+export type MealType = 'cafe' | 'almoco' | 'lanche' | 'jantar';
+
+export interface MealBuilderCategory {
+  title: string;
+  items: string[];
+}
 
 export interface MealOption {
   id: string;
   label: string;
-  isCustom?: boolean;
+  title?: string;
+  ingredients?: string[];
+  instructions?: string;
   tag?: string;
+  isCustom?: boolean;
+  isBuilder?: boolean;
+  builderCategories?: MealBuilderCategory[];
 }
 
 export interface MealConfig {
@@ -21,13 +31,15 @@ export interface MealState {
   completed: boolean;
   selectedOptionId: string;
   customText: string;
+  selectedCarb?: string;
+  selectedProtein?: string;
 }
 
 export interface DayState {
   dayNumber: number;
   completed: boolean;
   meals: Record<MealType, MealState>;
-  waterCups?: number; // Each cup ~250ml (e.g. 0 to 12)
+  waterCups?: number; // Each cup ~250ml
   notes?: string;
 }
 
@@ -37,3 +49,4 @@ export interface UserChallengeState {
   days: Record<number, DayState>;
   lastUpdated: string;
 }
+

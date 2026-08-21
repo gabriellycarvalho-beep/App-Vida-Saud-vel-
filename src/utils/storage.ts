@@ -16,8 +16,8 @@ export function createInitialDay(dayNumber: number): DayState {
     completed: false,
     meals: {
       cafe: createEmptyMealState(),
-      lanche: createEmptyMealState(),
       almoco: createEmptyMealState(),
+      lanche: createEmptyMealState(),
       jantar: createEmptyMealState(),
     },
     waterCups: 0,
@@ -90,7 +90,7 @@ export function calculateChallengeStats(days: Record<number, DayState>) {
   let currentStreak = 0;
   let tempStreak = 0;
 
-  const mealKeys: MealType[] = ['cafe', 'lanche', 'almoco', 'jantar'];
+  const mealKeys: MealType[] = ['cafe', 'almoco', 'lanche', 'jantar'];
 
   for (let i = 1; i <= 30; i++) {
     const day = days[i];

@@ -26,7 +26,7 @@ export function DayCard({
 }: DayCardProps) {
   const [, setJustCelebrated] = useState(false);
 
-  const mealTypes: MealType[] = ['cafe', 'lanche', 'almoco', 'jantar'];
+  const mealTypes: MealType[] = ['cafe', 'almoco', 'lanche', 'jantar'];
   const completedMealsCount = mealTypes.filter((m) => day.meals[m]?.completed).length;
   const isFullyCompleted = day.completed || completedMealsCount === 4;
 
@@ -36,7 +36,7 @@ export function DayCard({
         particleCount: 50,
         spread: 60,
         origin: { y: 0.7 },
-        colors: ['#FF6B8B', '#FF8E9E', '#4A90E2', '#2563EB', '#10B981'],
+        colors: ['#FF6B8B', '#FF8E9E', '#4A90E2', '#38BDF8', '#10B981'],
       });
     } catch {
       // ignore
@@ -64,15 +64,15 @@ export function DayCard({
 
   const dayWater = day.waterCups || 0;
 
-  // Card classes based on "Natural Tones" design specifications
+  // Card classes for Night Theme
   const getCardClasses = () => {
     if (isFullyCompleted) {
-      return 'border border-emerald-200/90 bg-emerald-50/50 rounded-2xl shadow-xs';
+      return 'border border-emerald-500/40 bg-emerald-950/20 rounded-2xl shadow-xs';
     }
     if (isExpanded) {
-      return 'border-2 border-[#FF6B8B] rounded-2xl bg-white shadow-sm';
+      return 'border-2 border-[#FF6B8B]/80 rounded-2xl bg-[#1E293B] shadow-md shadow-pink-500/5';
     }
-    return 'border border-slate-200/80 bg-slate-50/50 rounded-2xl opacity-90 hover:opacity-100 hover:bg-white hover:border-slate-300 transition-all';
+    return 'border border-slate-800 bg-[#1E293B]/70 rounded-2xl hover:border-slate-700 hover:bg-[#1E293B] transition-all';
   };
 
   return (
@@ -95,17 +95,17 @@ export function DayCard({
         }}
       >
         <div className="flex items-center gap-3 min-w-0">
-          {/* Natural Tones Number Badge */}
+          {/* Night Theme Number Badge */}
           {isFullyCompleted ? (
             <div className="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center text-white font-bold text-xs flex-shrink-0 shadow-xs">
               <Check className="w-4 h-4 stroke-[3]" />
             </div>
           ) : isExpanded ? (
-            <div className="w-8 h-8 rounded-full border-2 border-[#FF6B8B] flex items-center justify-center text-[#FF6B8B] font-bold text-xs flex-shrink-0 bg-white shadow-xs">
+            <div className="w-8 h-8 rounded-full border-2 border-[#FF6B8B] flex items-center justify-center text-[#FF8E9E] font-bold text-xs flex-shrink-0 bg-[#0F172A] shadow-xs">
               {day.dayNumber < 10 ? `0${day.dayNumber}` : day.dayNumber}
             </div>
           ) : (
-            <div className="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-slate-500 font-bold text-xs flex-shrink-0">
+            <div className="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-400 font-bold text-xs flex-shrink-0">
               {day.dayNumber < 10 ? `0${day.dayNumber}` : day.dayNumber}
             </div>
           )}
@@ -113,17 +113,17 @@ export function DayCard({
           {/* Title and indicators */}
           <div className="min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
-              <h3 className="text-sm font-bold text-slate-700 tracking-tight">
+              <h3 className="text-sm font-bold text-slate-100 tracking-tight">
                 Dia {day.dayNumber < 10 ? `0${day.dayNumber}` : day.dayNumber}
               </h3>
 
               {isFullyCompleted ? (
-                <span className="inline-flex items-center gap-0.5 text-[10px] font-bold px-2 py-0.2 rounded-full bg-emerald-100 text-emerald-700">
+                <span className="inline-flex items-center gap-0.5 text-[10px] font-bold px-2 py-0.2 rounded-full bg-emerald-950/80 text-emerald-300 border border-emerald-800">
                   <Sparkles className="w-2.5 h-2.5" />
                   Concluído
                 </span>
               ) : isExpanded ? (
-                <span className="text-[10px] font-semibold text-[#FF6B8B]">
+                <span className="text-[10px] font-semibold text-[#FF8E9E]">
                   Em andamento ({completedMealsCount}/4)
                 </span>
               ) : (
@@ -142,9 +142,9 @@ export function DayCard({
                     className={`w-1.5 h-1.5 rounded-full transition-colors ${
                       day.meals[m]?.completed
                         ? isFullyCompleted
-                          ? 'bg-emerald-500'
+                          ? 'bg-emerald-400'
                           : 'bg-[#FF6B8B]'
-                        : 'bg-slate-300'
+                        : 'bg-slate-700'
                     }`}
                     title={m}
                   />
@@ -169,7 +169,7 @@ export function DayCard({
             className={`w-7 h-7 rounded-lg flex items-center justify-center transition-all ${
               isFullyCompleted
                 ? 'bg-emerald-500 text-white shadow-xs'
-                : 'bg-white text-slate-400 border border-slate-200 hover:border-slate-300 hover:text-slate-600'
+                : 'bg-[#0F172A] text-slate-400 border border-slate-700 hover:border-slate-600 hover:text-slate-200'
             }`}
           >
             {isFullyCompleted ? (
@@ -181,7 +181,7 @@ export function DayCard({
 
           <div
             className={`w-6 h-6 rounded-full flex items-center justify-center text-slate-400 transition-transform duration-200 ${
-              isExpanded ? 'rotate-180 text-slate-700' : ''
+              isExpanded ? 'rotate-180 text-pink-400' : ''
             }`}
           >
             <ChevronDown className="w-4 h-4" />
@@ -189,27 +189,27 @@ export function DayCard({
         </div>
       </div>
 
-      {/* Expanded Accordion Body with Natural Tones dashed tree connector */}
+      {/* Expanded Accordion Body */}
       {isExpanded && (
-        <div className="border-t border-slate-100 p-3.5 sm:p-4 bg-white space-y-3">
+        <div className="border-t border-slate-800 p-3.5 sm:p-4 bg-[#0F172A]/70 space-y-3">
           {/* Quick Actions & Header inside Day */}
           <div className="flex items-center justify-between gap-2 flex-wrap pb-1">
-            <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+            <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
               Refeições do Dia {day.dayNumber}:
             </p>
             <button
               type="button"
               id={`btn-mark-all-day-${day.dayNumber}`}
               onClick={handleMarkAllMeals}
-              className="inline-flex items-center gap-1 text-[11px] font-semibold text-slate-600 hover:text-slate-900 bg-slate-50 hover:bg-slate-100 px-2 py-0.8 rounded-lg border border-slate-200 transition-colors"
+              className="inline-flex items-center gap-1 text-[11px] font-semibold text-slate-300 hover:text-white bg-[#1E293B] hover:bg-slate-700 px-2 py-0.8 rounded-lg border border-slate-700 transition-colors"
             >
-              <CheckCheck className="w-3.5 h-3.5 text-emerald-600" />
+              <CheckCheck className="w-3.5 h-3.5 text-emerald-400" />
               <span>Marcar 4 refeições</span>
             </button>
           </div>
 
           {/* 4 Meals with Left Dashed Tree Guide */}
-          <div className="space-y-3 ml-1 border-l-2 border-dashed border-slate-200 pl-3 sm:pl-3.5">
+          <div className="space-y-3 ml-1 border-l-2 border-dashed border-slate-700 pl-3 sm:pl-3.5">
             {mealTypes.map((mealType) => (
               <MealItem
                 key={mealType}
@@ -224,13 +224,13 @@ export function DayCard({
 
           {/* Water Tracker for this Day */}
           {onUpdateWater && (
-            <div className="mt-3 p-2.5 rounded-xl bg-slate-50 border border-slate-200/80">
+            <div className="mt-3 p-2.5 rounded-xl bg-[#1E293B] border border-slate-800">
               <div className="flex items-center justify-between mb-1.5">
-                <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-700">
-                  <Droplets className="w-3.5 h-3.5 text-[#4A90E2]" />
+                <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-200">
+                  <Droplets className="w-3.5 h-3.5 text-[#38BDF8]" />
                   <span>Hidratação do Dia</span>
                 </div>
-                <span className="text-[10px] font-bold text-[#4A90E2]">
+                <span className="text-[10px] font-bold text-[#38BDF8]">
                   {dayWater * 250}ml / 2000ml ({dayWater}/8 copos)
                 </span>
               </div>
@@ -246,8 +246,8 @@ export function DayCard({
                       title={`Copo ${idx + 1} (250ml)`}
                       className={`h-7 rounded-md flex items-center justify-center text-xs font-bold transition-all ${
                         isDrunk
-                          ? 'bg-[#4A90E2] text-white shadow-2xs'
-                          : 'bg-white text-slate-400 border border-slate-200 hover:bg-sky-50 hover:text-sky-600'
+                          ? 'bg-[#38BDF8] text-slate-950 shadow-xs'
+                          : 'bg-[#0F172A] text-slate-500 border border-slate-700 hover:bg-slate-800 hover:text-slate-300'
                       }`}
                     >
                       💧
@@ -262,4 +262,3 @@ export function DayCard({
     </div>
   );
 }
-
