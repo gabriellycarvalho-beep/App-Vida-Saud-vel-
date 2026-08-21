@@ -24,55 +24,35 @@ export function Header({
   onOpenReset,
 }: HeaderProps) {
   return (
-    <header className="space-y-3.5">
-      {/* Top Banner Card in Night Theme with luminous Rose/Cyan accents */}
-      <div className="bg-gradient-to-br from-[#1E293B] via-[#0F172A] to-[#1E1B4B] p-5 sm:p-6 pt-4 text-white text-center rounded-2xl sm:rounded-3xl border border-slate-700/80 shadow-lg relative overflow-hidden">
-        {/* Glow ambient background */}
-        <div className="absolute -top-12 -right-12 w-32 h-32 bg-[#FF6B8B]/20 rounded-full blur-2xl pointer-events-none" />
-        <div className="absolute -bottom-12 -left-12 w-32 h-32 bg-[#4A90E2]/20 rounded-full blur-2xl pointer-events-none" />
-
-        {/* Subtle top action buttons inside header banner */}
-        <div className="flex items-center justify-between gap-2 mb-3 relative z-10">
-          <div className="flex items-center gap-1.5 text-xs font-semibold text-pink-200 bg-[#FF6B8B]/20 backdrop-blur-md px-2.5 py-1 rounded-full border border-[#FF6B8B]/40 shadow-xs">
-            <Heart className="w-3.5 h-3.5 fill-[#FF6B8B] text-[#FF6B8B]" />
-            <span>Desafio 30 Dias</span>
-          </div>
-
-          <div className="flex items-center gap-1.5">
-            <button
-              type="button"
-              id="btn-open-guide"
-              onClick={onOpenGuide}
-              className="flex items-center gap-1 text-xs font-semibold text-slate-200 bg-slate-800/80 hover:bg-slate-700 hover:text-white backdrop-blur-md px-2.5 py-1 rounded-full border border-slate-700 transition-colors shadow-xs"
-            >
-              <BookOpen className="w-3 h-3 text-[#38BDF8]" />
-              <span>Guia</span>
-            </button>
-
-            <button
-              type="button"
-              id="btn-reset-challenge"
-              onClick={onOpenReset}
-              title="Reiniciar Desafio"
-              className="w-7 h-7 flex items-center justify-center text-slate-400 hover:text-rose-300 bg-slate-800/80 hover:bg-slate-700 backdrop-blur-md rounded-full border border-slate-700 transition-colors"
-            >
-              <RotateCcw className="w-3.5 h-3.5" />
-            </button>
-          </div>
+    <header className="space-y-3">
+      {/* Top Action Bar */}
+      <div className="flex items-center justify-between gap-2 px-1">
+        <div className="flex items-center gap-1.5 text-xs font-semibold text-pink-200 bg-[#FF6B8B]/20 backdrop-blur-md px-3 py-1.5 rounded-full border border-[#FF6B8B]/40 shadow-xs">
+          <Heart className="w-3.5 h-3.5 fill-[#FF6B8B] text-[#FF6B8B]" />
+          <span>30 Dias</span>
         </div>
 
-        {/* Title and Subtitle in high contrast */}
-        <h1
-          id="main-app-title"
-          className="text-xl sm:text-2xl font-black tracking-tight text-white drop-shadow-md relative z-10"
-        >
-          Desafio Não Morra
-        </h1>
-        <p className="text-xs text-slate-300 mt-1 uppercase tracking-widest font-semibold relative z-10 flex items-center justify-center gap-1.5">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#FF6B8B]" />
-          <span>Cardápio & Acompanhamento</span>
-          <span className="w-1.5 h-1.5 rounded-full bg-[#38BDF8]" />
-        </p>
+        <div className="flex items-center gap-1.5">
+          <button
+            type="button"
+            id="btn-open-guide"
+            onClick={onOpenGuide}
+            className="flex items-center gap-1 text-xs font-semibold text-slate-200 bg-slate-800 hover:bg-slate-700 hover:text-white px-3 py-1.5 rounded-full border border-slate-700 transition-colors shadow-xs"
+          >
+            <BookOpen className="w-3.5 h-3.5 text-[#38BDF8]" />
+            <span>Guia</span>
+          </button>
+
+          <button
+            type="button"
+            id="btn-reset-challenge"
+            onClick={onOpenReset}
+            title="Reiniciar Desafio"
+            className="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-rose-300 bg-slate-800 hover:bg-slate-700 rounded-full border border-slate-700 transition-colors"
+          >
+            <RotateCcw className="w-3.5 h-3.5" />
+          </button>
+        </div>
       </div>
 
       {/* Diet Selector & Metrics Bar */}
